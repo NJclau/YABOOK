@@ -27,6 +27,11 @@ const PhotoSearch = ({ currentSchool }) => {
       });
       
       setSearchResults(response.data.results || []);
+      
+      if (!response.data.results || response.data.results.length === 0) {
+        // Don't show error for empty results, just show "no results found"
+        console.log('No photos found for search query:', searchQuery);
+      }
     } catch (error) {
       console.error('Error searching photos:', error);
       alert('Error searching photos: ' + (error.response?.data?.detail || error.message));
