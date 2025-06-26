@@ -115,7 +115,7 @@ export default function TemplateGallery() {
       {/* Templates Grid */}
       {templates.length === 0 ? (
         <div className="text-center py-12">
-          <TemplateIcon className="mx-auto h-16 w-16 text-gray-400" />
+          <Square3Stack3DIcon className="mx-auto h-16 w-16 text-gray-400" />
           <h3 className="mt-4 text-lg font-medium text-gray-900">No templates found</h3>
           <p className="mt-2 text-gray-500">
             {selectedCategory 
