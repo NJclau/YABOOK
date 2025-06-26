@@ -14,13 +14,13 @@ import magic
 from PIL import Image
 
 # Import our models and services
-from models import (
+from .models import (
     School, SchoolCreate, Photo, PhotoCreate, PhotoResponse, PhotoSearchResponse,
     PhotoPrismInstance, PhotoPrismInstanceCreate, PhotoPrismSyncEvent, PhotoPrismSyncEventCreate,
     SyncStatusResponse, InstanceHealthResponse, StatusCheck, StatusCheckCreate
 )
-from services.photoprism_adapter import instance_manager
-from services.sync_coordinator import SyncCoordinator
+from .services.photoprism_adapter import instance_manager
+from .services.sync_coordinator import SyncCoordinator
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
