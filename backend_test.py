@@ -186,24 +186,24 @@ class YABOOKAPITest(unittest.TestCase):
         print(f"✅ Get project photos passed, found {len(data)} photos")
 
 def run_tests():
-    # Create a test suite
-    suite = unittest.TestSuite()
+    # Create a test instance
+    test_instance = YABOOKAPITest()
     
-    # Add tests in order
-    suite.addTest(YABOOKAPITest('test_01_health_check'))
-    suite.addTest(YABOOKAPITest('test_02_register_user'))
-    suite.addTest(YABOOKAPITest('test_03_login_user'))
-    suite.addTest(YABOOKAPITest('test_04_get_current_user'))
-    suite.addTest(YABOOKAPITest('test_05_create_project'))
-    suite.addTest(YABOOKAPITest('test_06_get_projects'))
-    suite.addTest(YABOOKAPITest('test_07_get_project_by_id'))
-    suite.addTest(YABOOKAPITest('test_08_update_project'))
-    suite.addTest(YABOOKAPITest('test_09_upload_photo'))
-    suite.addTest(YABOOKAPITest('test_10_get_project_photos'))
-    
-    # Run the tests
-    runner = unittest.TextTestRunner(verbosity=2)
-    runner.run(suite)
+    # Run tests manually in sequence
+    try:
+        test_instance.test_01_health_check()
+        test_instance.test_02_register_user()
+        test_instance.test_03_login_user()
+        test_instance.test_04_get_current_user()
+        test_instance.test_05_create_project()
+        test_instance.test_06_get_projects()
+        test_instance.test_07_get_project_by_id()
+        test_instance.test_08_update_project()
+        test_instance.test_09_upload_photo()
+        test_instance.test_10_get_project_photos()
+        print("\n✅ All API tests passed successfully!")
+    except AssertionError as e:
+        print(f"\n❌ Test failed: {str(e)}")
 
 if __name__ == "__main__":
     print("🚀 Starting YABOOK API Tests")
