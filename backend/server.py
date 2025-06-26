@@ -549,7 +549,7 @@ async def simulate_photoprism_sync(photo_dict: dict):
         
         # Update photo with PhotoPrism data
         await db.photos.update_one(
-            {"_id": photo_dict["id"]},
+            {"id": photo_dict["id"]},
             {
                 "$set": {
                     "photoprism_uuid": photoprism_response["uuid"],
