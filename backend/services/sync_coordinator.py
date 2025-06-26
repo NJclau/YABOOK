@@ -3,11 +3,11 @@ import logging
 from typing import Dict, Any, List, Optional
 from datetime import datetime, timedelta
 from motor.motor_asyncio import AsyncIOMotorCollection
-from models import (
+from .models import (
     Photo, PhotoPrismSyncEvent, PhotoPrismInstance, 
     SyncEventType, SyncEventStatus, PhotoStatus
 )
-from services.photoprism_adapter import PhotoPrismInstanceManager
+from .photoprism_adapter import PhotoPrismInstanceManager
 import json
 
 logger = logging.getLogger(__name__)
