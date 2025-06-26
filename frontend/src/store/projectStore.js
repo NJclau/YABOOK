@@ -12,6 +12,8 @@ export const useProjectStore = create((set, get) => ({
   pages: [],
   templates: [],
   teamMembers: [],
+  syncStatus: null,
+  photoPrismInstance: null,
   loading: false,
 
   fetchProjects: async () => {
@@ -34,7 +36,7 @@ export const useProjectStore = create((set, get) => ({
       toast.success('Project created successfully!');
       return response.data;
     } catch (error) {
-      toast.error('Failed to create project');
+      toast.error(error.response?.data?.detail || 'Failed to create project');
       return null;
     }
   },
@@ -80,11 +82,34 @@ export const useProjectStore = create((set, get) => ({
         photos: [...state.photos, response.data]
       }));
       
-      toast.success('Photo uploaded successfully!');
+      toast.success('Photo uploaded successfully! Syncing to PhotoPrism...');
       return response.data;
     } catch (error) {
-      toast.error('Failed to upload photo');
+      toast.error(error.response?.data?.detail || 'Failed to upload photo');
       return null;
+    }
+  },
+
+  uploadMultiplePhotos: async (projectId, files, tags = []) => {
+    const uploadPromises = Array.from(files).map(file => 
+      get().uploadPhoto(projectId, file, tags)
+    );
+    
+    try {
+      const results = await Promise.allSettled(uploadPromises);
+      const successful = results.filter(result => result.status === 'fulfilled' && result.value).length;
+      const failed = results.length - successful;
+      
+      if (failed > 0) {
+        toast.error(`${successful} photos uploaded, ${failed} failed`);
+      } else {
+        toast.success(`All ${successful} photos uploaded successfully!`);
+      }
+      
+      return results;
+    } catch (error) {
+      toast.error('Bulk upload failed');
+      return [];
     }
   },
 
@@ -114,7 +139,7 @@ export const useProjectStore = create((set, get) => ({
       toast.success('Page created successfully!');
       return response.data;
     } catch (error) {
-      toast.error('Failed to create page');
+      toast.error(error.response?.data?.detail || 'Failed to create page');
       return null;
     }
   },
@@ -173,5 +198,56 @@ export const useProjectStore = create((set, get) => ({
       toast.error(error.response?.data?.detail || 'Failed to invite team member');
       return false;
     }
+  },
+
+  // PhotoPrism Integration
+  fetchPhotoPrismInstance: async (schoolId) => {
+    try {
+      const response = await axios.get(`${API}/photoprism/instances/${schoolId}`);
+      set({ photoPrismInstance: response.data });
+      return response.data;
+    } catch (error) {
+      console.error('Failed to fetch PhotoPrism instance:', error);
+      return null;
+    }
+  },
+
+  fetchSyncStatus: async (schoolId) => {
+    try {
+      const response = await axios.get(`${API}/sync/status/${schoolId}`);
+      set({ syncStatus: response.data });
+      return response.data;
+    } catch (error) {
+      console.error('Failed to fetch sync status:', error);
+      return null;
+    }
+  },
+
+  checkPhotoPrismHealth: async (schoolId) => {
+    try {
+      const response = await axios.get(`${API}/health/photoprism/${schoolId}`);
+      return response.data;
+    } catch (error) {
+      console.error('Failed to check PhotoPrism health:', error);
+      return { status: 'error', healthy: false };
+    }
+  },
+
+  // Utility functions
+  getPhotosBySync: (syncStatus) => {
+    const { photos } = get();
+    return photos.filter(photo => photo.sync_status === syncStatus);
+  },
+
+  getProjectStats: () => {
+    const { photos, pages, teamMembers } = get();
+    return {
+      totalPhotos: photos.length,
+      syncedPhotos: photos.filter(p => p.sync_status === 'synced').length,
+      pendingPhotos: photos.filter(p => p.sync_status === 'pending').length,
+      failedPhotos: photos.filter(p => p.sync_status === 'failed').length,
+      totalPages: pages.length,
+      totalTeamMembers: teamMembers.length
+    };
   }
 }));
