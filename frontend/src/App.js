@@ -11,7 +11,20 @@ import SyncMonitoring from './components/SyncMonitoring';
 import PhotoSearch from './components/PhotoSearch';
 
 function App() {
-  const [currentSchool, setCurrentSchool] = useState(null);
+  const [currentSchool, setCurrentSchool] = useState(() => {
+    // Try to load school from localStorage
+    const savedSchool = localStorage.getItem('currentSchool');
+    return savedSchool ? JSON.parse(savedSchool) : null;
+  });
+
+  // Save school to localStorage whenever it changes
+  useEffect(() => {
+    if (currentSchool) {
+      localStorage.setItem('currentSchool', JSON.stringify(currentSchool));
+    } else {
+      localStorage.removeItem('currentSchool');
+    }
+  }, [currentSchool]);
 
   return (
     <div className="App min-h-screen bg-gray-50">
