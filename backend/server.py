@@ -586,6 +586,19 @@ async def simulate_photoprism_sync(photo_dict: dict):
             }
         )
 
+# Health check endpoint
+@api_router.get("/health")
+async def health_check():
+    return {
+        "status": "healthy",
+        "timestamp": datetime.utcnow(),
+        "version": "1.0.0"
+    }
+
+@api_router.get("/")
+async def api_root():
+    return {"message": "YABOOK API - Enterprise Yearbook Management System"}
+
 # Include router and configure logging
 app.include_router(api_router)
 
@@ -603,16 +616,3 @@ logger = logging.getLogger(__name__)
 @app.on_event("shutdown")
 async def shutdown_db_client():
     client.close()
-
-# Health check endpoint
-@api_router.get("/health")
-async def health_check():
-    return {
-        "status": "healthy",
-        "timestamp": datetime.utcnow(),
-        "version": "1.0.0"
-    }
-
-@api_router.get("/")
-async def api_root():
-    return {"message": "YABOOK API - Enterprise Yearbook Management System"}
