@@ -200,6 +200,7 @@ const Register = ({ onSwitchToLogin }) => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
+  const [schoolsLoading, setSchoolsLoading] = useState(true);
   const { register } = useAuth();
 
   useEffect(() => {
@@ -208,16 +209,43 @@ const Register = ({ onSwitchToLogin }) => {
 
   const fetchSchools = async () => {
     try {
+      setSchoolsLoading(true);
       // Use public endpoint for school listing during registration
       const response = await axios.get(`${API}/schools/public`);
+      console.log('Fetched schools:', response.data);
       setSchools(response.data);
+      
+      // If no schools exist, create a default one
+      if (response.data.length === 0) {
+        console.log('No schools found, creating default school...');
+        await createDefaultSchool();
+      }
     } catch (error) {
       console.error('Failed to fetch schools:', error);
-      // Fallback to demo schools if the API call fails
-      setSchools([
-        { id: 'demo-school-1', name: 'Demo High School', domain: 'demo.school' },
-        { id: 'demo-school-2', name: 'Example Academy', domain: 'example.academy' }
-      ]);
+      // Try to create a default school if none exist
+      await createDefaultSchool();
+    } finally {
+      setSchoolsLoading(false);
+    }
+  };
+
+  const createDefaultSchool = async () => {
+    try {
+      const defaultSchool = {
+        name: "YABOOK Demo School",
+        domain: "demo.yabook.edu",
+        address: "123 Demo Street, Demo City, DC 12345",
+        contact_email: "admin@demo.yabook.edu",
+        contact_phone: "555-YABOOK1"
+      };
+      
+      const response = await axios.post(`${API}/schools`, defaultSchool);
+      console.log('Created default school:', response.data);
+      setSchools([response.data]);
+    } catch (error) {
+      console.error('Failed to create default school:', error);
+      // Fallback to showing empty list with helpful message
+      setSchools([]);
     }
   };
 
@@ -234,6 +262,13 @@ const Register = ({ onSwitchToLogin }) => {
     setError('');
     setSuccess('');
 
+    if (!formData.school_id) {
+      setError('Please select a school');
+      setLoading(false);
+      return;
+    }
+
+    console.log('Registering with data:', formData);
     const result = await register(formData);
     if (result.success) {
       setSuccess('Registration successful! You can now login.');
@@ -333,27 +368,36 @@ const Register = ({ onSwitchToLogin }) => {
               <label htmlFor="school_id" className="block text-sm font-medium text-gray-700">
                 School
               </label>
-              <select
-                id="school_id"
-                name="school_id"
-                required
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                value={formData.school_id}
-                onChange={handleChange}
-              >
-                <option value="">Select a school</option>
-                {schools.map(school => (
-                  <option key={school.id} value={school.id}>
-                    {school.name} ({school.domain})
-                  </option>
-                ))}
-              </select>
+              {schoolsLoading ? (
+                <div className="mt-1 px-3 py-2 text-sm text-gray-500">Loading schools...</div>
+              ) : (
+                <select
+                  id="school_id"
+                  name="school_id"
+                  required
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                  value={formData.school_id}
+                  onChange={handleChange}
+                >
+                  <option value="">Select a school</option>
+                  {schools.map(school => (
+                    <option key={school.id} value={school.id}>
+                      {school.name} ({school.domain})
+                    </option>
+                  ))}
+                </select>
+              )}
+              {!schoolsLoading && schools.length === 0 && (
+                <div className="mt-2 text-sm text-red-600">
+                  No schools available. Please contact your administrator.
+                </div>
+              )}
             </div>
 
             <div>
               <button
                 type="submit"
-                disabled={loading}
+                disabled={loading || schoolsLoading || schools.length === 0}
                 className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
               >
                 {loading ? 'Creating account...' : 'Create account'}
