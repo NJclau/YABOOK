@@ -29,7 +29,10 @@ const ProjectCard = ({ project }) => {
   };
 
   return (
-    <Card className="hover:shadow-lg transition-shadow cursor-pointer group">
+    <Card 
+      className="hover:shadow-lg transition-shadow cursor-pointer group"
+      onClick={() => navigate(`/projects/${project.id}`)}
+    >
       <CardHeader className="pb-3">
         <div className="flex items-start justify-between">
           <div className="flex-1">
