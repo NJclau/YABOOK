@@ -1,53 +1,112 @@
-import { useEffect } from "react";
-import "./App.css";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import axios from "axios";
+import React from 'react';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { Toaster } from 'react-hot-toast';
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
+// Store
+import { useAuthStore } from './store/authStore';
 
-const Home = () => {
-  const helloWorldApi = async () => {
-    try {
-      const response = await axios.get(`${API}/`);
-      console.log(response.data.message);
-    } catch (e) {
-      console.error(e, `errored out requesting / api`);
-    }
-  };
+// Components
+import Navbar from './components/Layout/Navbar';
+import AuthForm from './components/Auth/AuthForm';
+import Dashboard from './components/Dashboard/Dashboard';
+import ProjectView from './components/Project/ProjectView';
+import PhotoLibrary from './components/Photos/PhotoLibrary';
+import PageEditor from './components/Editor/PageEditor';
+import TemplateGallery from './components/Templates/TemplateGallery';
 
-  useEffect(() => {
-    helloWorldApi();
-  }, []);
+import './App.css';
 
-  return (
-    <div>
-      <header className="App-header">
-        <a
-          className="App-link"
-          href="https://emergent.sh"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <img src="https://avatars.githubusercontent.com/in/1201222?s=120&u=2686cf91179bbafbc7a71bfbc43004cf9ae1acea&v=4" />
-        </a>
-        <p className="mt-5">Building something incredible ~!</p>
-      </header>
-    </div>
-  );
-};
+function ProtectedRoute({ children }) {
+  const { user } = useAuthStore();
+  return user ? children : <Navigate to="/auth" replace />;
+}
+
+function PublicRoute({ children }) {
+  const { user } = useAuthStore();
+  return !user ? children : <Navigate to="/dashboard" replace />;
+}
 
 function App() {
+  const { user, loading } = useAuthStore();
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      </div>
+    );
+  }
+
   return (
-    <div className="App">
+    <DndProvider backend={HTML5Backend}>
       <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Home />}>
-            <Route index element={<Home />} />
-          </Route>
-        </Routes>
+        <div className="min-h-screen bg-gray-50">
+          <Toaster position="top-right" />
+          
+          {user && <Navbar />}
+          
+          <Routes>
+            <Route 
+              path="/auth" 
+              element={
+                <PublicRoute>
+                  <AuthForm />
+                </PublicRoute>
+              } 
+            />
+            
+            <Route 
+              path="/dashboard" 
+              element={
+                <ProtectedRoute>
+                  <Dashboard />
+                </ProtectedRoute>
+              } 
+            />
+            
+            <Route 
+              path="/projects/:projectId" 
+              element={
+                <ProtectedRoute>
+                  <ProjectView />
+                </ProtectedRoute>
+              } 
+            />
+            
+            <Route 
+              path="/projects/:projectId/photos" 
+              element={
+                <ProtectedRoute>
+                  <PhotoLibrary />
+                </ProtectedRoute>
+              } 
+            />
+            
+            <Route 
+              path="/projects/:projectId/pages/:pageId/edit" 
+              element={
+                <ProtectedRoute>
+                  <PageEditor />
+                </ProtectedRoute>
+              } 
+            />
+            
+            <Route 
+              path="/templates" 
+              element={
+                <ProtectedRoute>
+                  <TemplateGallery />
+                </ProtectedRoute>
+              } 
+            />
+            
+            <Route path="/" element={<Navigate to="/dashboard" replace />} />
+          </Routes>
+        </div>
       </BrowserRouter>
-    </div>
+    </DndProvider>
   );
 }
 
