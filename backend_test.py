@@ -22,7 +22,8 @@ class YABOOKPhotoprismAPITest(unittest.TestCase):
             "instance_name": "Test PhotoPrism Instance",
             "base_url": "https://demo.photoprism.org",
             "admin_username": "admin",
-            "admin_password": "admin"
+            "admin_password": "admin",
+            "metadata": {}  # Add empty metadata dictionary
         }
     
     def test_01_api_root(self):
