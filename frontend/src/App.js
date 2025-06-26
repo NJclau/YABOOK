@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { DndProvider } from 'react-dnd';
@@ -29,7 +29,11 @@ function PublicRoute({ children }) {
 }
 
 function App() {
-  const { user, loading } = useAuthStore();
+  const { user, loading, initialize } = useAuthStore();
+
+  useEffect(() => {
+    initialize();
+  }, [initialize]);
 
   if (loading) {
     return (
