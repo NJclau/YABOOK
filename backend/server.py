@@ -576,7 +576,7 @@ async def simulate_photoprism_sync(photo_dict: dict):
     except Exception as e:
         # Handle sync failure
         await db.photos.update_one(
-            {"_id": photo_dict["id"]},
+            {"id": photo_dict["id"]},
             {
                 "$set": {
                     "sync_status": SyncStatus.FAILED,
