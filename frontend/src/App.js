@@ -208,14 +208,16 @@ const Register = ({ onSwitchToLogin }) => {
 
   const fetchSchools = async () => {
     try {
-      // For demo purposes, we'll create a mock school list
-      // In production, this would be a public endpoint to list available schools
+      // First try to get existing schools
+      const response = await axios.get(`${API}/schools`);
+      setSchools(response.data);
+    } catch (error) {
+      console.error('Failed to fetch schools:', error);
+      // If no schools exist or we don't have permission, create demo schools
       setSchools([
         { id: 'demo-school-1', name: 'Demo High School', domain: 'demo.school' },
         { id: 'demo-school-2', name: 'Example Academy', domain: 'example.academy' }
       ]);
-    } catch (error) {
-      console.error('Failed to fetch schools:', error);
     }
   };
 
