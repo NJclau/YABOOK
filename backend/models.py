@@ -40,7 +40,7 @@ class School(BaseModel):
 class SchoolCreate(BaseModel):
     name: str
     slug: str
-    settings: Optional[Dict[str, Any]] = None
+    settings: Dict[str, Any] = Field(default_factory=dict)
 
 class PhotoPrismInstance(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
