@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useProjectStore } from '../../store/projectStore';
 import { 
-  TemplateIcon,
+  Square3Stack3DIcon,
   FunnelIcon,
   EyeIcon,
   PlusIcon
