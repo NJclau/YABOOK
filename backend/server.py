@@ -299,6 +299,18 @@ async def read_users_me(current_user: dict = Depends(get_current_user)):
     return UserResponse(**current_user)
 
 # School Management Routes
+@api_router.get("/schools/public", response_model=List[SchoolResponse])
+async def get_public_schools():
+    """Public endpoint to list schools for registration"""
+    schools = await db.schools.find({"is_active": True}).to_list(100)
+    
+    # Add basic stats for each school (don't require authentication)
+    for school in schools:
+        school["total_users"] = await db.users.count_documents({"school_id": school["id"]})
+        school["total_photos"] = await db.photos.count_documents({"school_id": school["id"]})
+    
+    return [SchoolResponse(**school) for school in schools]
+
 @api_router.post("/schools", response_model=SchoolResponse)
 async def create_school(school: SchoolCreate):
     # Check if school domain already exists
