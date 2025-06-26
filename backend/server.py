@@ -437,7 +437,7 @@ async def get_photoprism_instances(current_user: dict = Depends(get_current_user
 
 @api_router.get("/photoprism/instances/{instance_id}/health")
 async def check_photoprism_health(instance_id: str, current_user: dict = Depends(get_current_user)):
-    instance = await db.photoprism_instances.find_one({"_id": instance_id})
+    instance = await db.photoprism_instances.find_one({"id": instance_id})
     if not instance:
         raise HTTPException(status_code=404, detail="PhotoPrism instance not found")
     
@@ -449,7 +449,7 @@ async def check_photoprism_health(instance_id: str, current_user: dict = Depends
     
     # Update last health check
     await db.photoprism_instances.update_one(
-        {"_id": instance_id},
+        {"id": instance_id},
         {"$set": {"last_health_check": datetime.utcnow()}}
     )
     
@@ -457,7 +457,7 @@ async def check_photoprism_health(instance_id: str, current_user: dict = Depends
 
 @api_router.post("/photoprism/instances/{instance_id}/reconcile")
 async def reconcile_photoprism_data(instance_id: str, current_user: dict = Depends(get_current_user)):
-    instance = await db.photoprism_instances.find_one({"_id": instance_id})
+    instance = await db.photoprism_instances.find_one({"id": instance_id})
     if not instance:
         raise HTTPException(status_code=404, detail="PhotoPrism instance not found")
     
