@@ -5,7 +5,7 @@ import {
   HomeIcon, 
   PhotoIcon, 
   DocumentTextIcon, 
-  TemplateIcon,
+  Square3Stack3DIcon,
   UserIcon,
   ArrowRightOnRectangleIcon
 } from '@heroicons/react/24/outline';
@@ -16,7 +16,7 @@ export default function Navbar() {
 
   const navigation = [
     { name: 'Dashboard', href: '/dashboard', icon: HomeIcon },
-    { name: 'Templates', href: '/templates', icon: TemplateIcon },
+    { name: 'Templates', href: '/templates', icon: Square3Stack3DIcon },
   ];
 
   const isActive = (path) => location.pathname === path;
