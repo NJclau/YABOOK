@@ -260,7 +260,7 @@ async def register(user: UserCreate):
         )
     
     # Check if school exists
-    school = await db.schools.find_one({"_id": user.school_id})
+    school = await db.schools.find_one({"id": user.school_id})
     if not school:
         raise HTTPException(status_code=404, detail="School not found")
     
