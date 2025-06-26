@@ -4,7 +4,7 @@ import { useToast } from '../../contexts/ToastContext';
 import { Button } from '../ui/Button';
 import { Card, CardHeader, CardTitle, CardContent } from '../ui/Card';
 import PhotoUpload from './PhotoUpload';
-import PhotoGallery from './PhotoGallery';
+import EnhancedPhotoGallery from './EnhancedPhotoGallery';
 import { ArrowLeft, BookOpen, Upload, Image, Settings, Users } from 'lucide-react';
 import axios from 'axios';
 
@@ -15,15 +15,14 @@ const ProjectDetail = () => {
   const { projectId } = useParams();
   const navigate = useNavigate();
   const [project, setProject] = useState(null);
-  const [photos, setPhotos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('photos');
+  const [refreshPhotos, setRefreshPhotos] = useState(0);
   const { addToast } = useToast();
 
   useEffect(() => {
     if (projectId) {
       fetchProject();
-      fetchPhotos();
     }
   }, [projectId]);
 
@@ -37,32 +36,37 @@ const ProjectDetail = () => {
     } catch (error) {
       addToast('Failed to fetch project details', 'error');
       navigate('/dashboard');
-    }
-  };
-
-  const fetchPhotos = async () => {
-    try {
-      const token = localStorage.getItem('token');
-      const response = await axios.get(`${API}/projects/${projectId}/photos`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      setPhotos(response.data);
-    } catch (error) {
-      addToast('Failed to fetch photos', 'error');
     } finally {
       setLoading(false);
     }
   };
 
   const handlePhotoUploaded = (newPhoto) => {
-    setPhotos([newPhoto, ...photos]);
+    setRefreshPhotos(prev => prev + 1);
     addToast('Photo uploaded successfully!', 'success');
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-red-500"></div>
+      </div>
+    );
+  }
 
   if (!project) {
     return (
       <div className="min-h-screen bg-gray-900 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-red-500"></div>
+        <Card>
+          <CardContent className="p-8 text-center">
+            <h3 className="text-lg font-medium text-white mb-2">Project not found</h3>
+            <p className="text-gray-400 mb-4">The project you're looking for doesn't exist or you don't have access to it.</p>
+            <Button onClick={() => navigate('/dashboard')}>
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Back to Dashboard
+            </Button>
+          </CardContent>
+        </Card>
       </div>
     );
   }
@@ -159,7 +163,10 @@ const ProjectDetail = () => {
                   onPhotoUploaded={handlePhotoUploaded}
                 />
               </div>
-              <PhotoGallery photos={photos} loading={loading} />
+              <EnhancedPhotoGallery 
+                projectId={projectId} 
+                key={refreshPhotos} // Force refresh when photos are uploaded
+              />
             </div>
           )}
 
