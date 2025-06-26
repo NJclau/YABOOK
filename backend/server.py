@@ -343,7 +343,7 @@ async def get_school(school_id: str, current_user: dict = Depends(get_current_us
     if current_user["role"] != UserRole.ADMIN and current_user["school_id"] != school_id:
         raise HTTPException(status_code=403, detail="Not authorized to access this school")
     
-    school = await db.schools.find_one({"_id": school_id})
+    school = await db.schools.find_one({"id": school_id})
     if not school:
         raise HTTPException(status_code=404, detail="School not found")
     
