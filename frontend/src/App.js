@@ -45,22 +45,88 @@ function App() {
             )}
             
             <div className="space-y-2">
-              <a href="/dashboard" className="block px-3 py-2 rounded-lg bg-blue-600 text-white">
+              <a 
+                href="/dashboard" 
+                className={`block px-3 py-2 rounded-lg ${
+                  window.location.pathname === '/dashboard' || window.location.pathname === '/'
+                    ? 'bg-blue-600 text-white' 
+                    : 'hover:bg-gray-800 text-gray-300'
+                }`}
+              >
                 Dashboard
               </a>
-              <a href="/schools" className="block px-3 py-2 rounded-lg hover:bg-gray-800 text-gray-300">
+              <a 
+                href="/schools" 
+                className={`block px-3 py-2 rounded-lg ${
+                  window.location.pathname === '/schools'
+                    ? 'bg-blue-600 text-white' 
+                    : 'hover:bg-gray-800 text-gray-300'
+                }`}
+              >
                 School Management
               </a>
-              <a href="/photos" className="block px-3 py-2 rounded-lg hover:bg-gray-800 text-gray-300">
+              <a 
+                href="/photos" 
+                className={`block px-3 py-2 rounded-lg ${
+                  window.location.pathname === '/photos'
+                    ? 'bg-blue-600 text-white' 
+                    : currentSchool ? 'hover:bg-gray-800 text-gray-300' : 'text-gray-500 cursor-not-allowed'
+                }`}
+                onClick={(e) => {
+                  if (!currentSchool) {
+                    e.preventDefault();
+                    alert('Please select a school first from the dashboard');
+                  }
+                }}
+              >
                 Photo Management
               </a>
-              <a href="/search" className="block px-3 py-2 rounded-lg hover:bg-gray-800 text-gray-300">
+              <a 
+                href="/search" 
+                className={`block px-3 py-2 rounded-lg ${
+                  window.location.pathname === '/search'
+                    ? 'bg-blue-600 text-white' 
+                    : currentSchool ? 'hover:bg-gray-800 text-gray-300' : 'text-gray-500 cursor-not-allowed'
+                }`}
+                onClick={(e) => {
+                  if (!currentSchool) {
+                    e.preventDefault();
+                    alert('Please select a school first from the dashboard');
+                  }
+                }}
+              >
                 AI Photo Search
               </a>
-              <a href="/sync" className="block px-3 py-2 rounded-lg hover:bg-gray-800 text-gray-300">
+              <a 
+                href="/sync" 
+                className={`block px-3 py-2 rounded-lg ${
+                  window.location.pathname === '/sync'
+                    ? 'bg-blue-600 text-white' 
+                    : currentSchool ? 'hover:bg-gray-800 text-gray-300' : 'text-gray-500 cursor-not-allowed'
+                }`}
+                onClick={(e) => {
+                  if (!currentSchool) {
+                    e.preventDefault();
+                    alert('Please select a school first from the dashboard');
+                  }
+                }}
+              >
                 Sync Monitoring
               </a>
-              <a href="/settings" className="block px-3 py-2 rounded-lg hover:bg-gray-800 text-gray-300">
+              <a 
+                href="/settings" 
+                className={`block px-3 py-2 rounded-lg ${
+                  window.location.pathname === '/settings'
+                    ? 'bg-blue-600 text-white' 
+                    : currentSchool ? 'hover:bg-gray-800 text-gray-300' : 'text-gray-500 cursor-not-allowed'
+                }`}
+                onClick={(e) => {
+                  if (!currentSchool) {
+                    e.preventDefault();
+                    alert('Please select a school first from the dashboard');
+                  }
+                }}
+              >
                 PhotoPrism Settings
               </a>
             </div>
