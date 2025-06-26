@@ -537,7 +537,7 @@ async def create_photoprism_instance(school_id: str):
     
     # Update status to active
     await db.photoprism_instances.update_one(
-        {"_id": instance_dict["id"]},
+        {"id": instance_dict["id"]},
         {"$set": {"status": PhotoPrismInstanceStatus.ACTIVE}}
     )
 
