@@ -34,7 +34,12 @@ const PhotoSearch = ({ currentSchool }) => {
       }
     } catch (error) {
       console.error('Error searching photos:', error);
-      alert('Error searching photos: ' + (error.response?.data?.detail || error.message));
+      // Don't show alert for search failures, just show empty results
+      if (error.response?.status === 500) {
+        console.log('PhotoPrism search service unavailable, showing empty results');
+      } else {
+        console.log('Search error:', error.response?.data?.detail || error.message);
+      }
       setSearchResults([]);
     } finally {
       setLoading(false);
