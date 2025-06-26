@@ -406,7 +406,7 @@ async def get_photos(
 
 @api_router.get("/photos/{photo_id}", response_model=PhotoResponse)
 async def get_photo(photo_id: str, current_user: dict = Depends(get_current_user)):
-    photo = await db.photos.find_one({"_id": photo_id, "school_id": current_user["school_id"]})
+    photo = await db.photos.find_one({"id": photo_id, "school_id": current_user["school_id"]})
     if not photo:
         raise HTTPException(status_code=404, detail="Photo not found")
     
@@ -414,7 +414,7 @@ async def get_photo(photo_id: str, current_user: dict = Depends(get_current_user
 
 @api_router.delete("/photos/{photo_id}")
 async def delete_photo(photo_id: str, current_user: dict = Depends(get_current_user)):
-    photo = await db.photos.find_one({"_id": photo_id, "school_id": current_user["school_id"]})
+    photo = await db.photos.find_one({"id": photo_id, "school_id": current_user["school_id"]})
     if not photo:
         raise HTTPException(status_code=404, detail="Photo not found")
     
@@ -422,7 +422,7 @@ async def delete_photo(photo_id: str, current_user: dict = Depends(get_current_u
     if photo["uploaded_by"] != current_user["id"] and current_user["role"] != UserRole.ADMIN:
         raise HTTPException(status_code=403, detail="Not authorized to delete this photo")
     
-    await db.photos.delete_one({"_id": photo_id})
+    await db.photos.delete_one({"id": photo_id})
     return {"message": "Photo deleted successfully"}
 
 # PhotoPrism Integration Routes
