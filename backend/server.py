@@ -326,7 +326,7 @@ async def create_school(school: SchoolCreate):
 async def get_schools(current_user: dict = Depends(get_current_user)):
     if current_user["role"] != UserRole.ADMIN:
         # Non-admin users can only see their own school
-        schools = await db.schools.find({"_id": current_user["school_id"]}).to_list(1)
+        schools = await db.schools.find({"id": current_user["school_id"]}).to_list(1)
     else:
         schools = await db.schools.find().to_list(100)
     
