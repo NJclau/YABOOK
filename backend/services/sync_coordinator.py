@@ -5,13 +5,13 @@ from datetime import datetime, timedelta
 from motor.motor_asyncio import AsyncIOMotorCollection
 import sys
 import os
-sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from models import (
     Photo, PhotoPrismSyncEvent, PhotoPrismInstance, 
     SyncEventType, SyncEventStatus, PhotoStatus
 )
-from photoprism_adapter import PhotoPrismInstanceManager
+from services.photoprism_adapter import PhotoPrismInstanceManager
 import json
 
 logger = logging.getLogger(__name__)
