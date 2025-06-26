@@ -188,6 +188,7 @@ class YABOOKAPITest(unittest.TestCase):
 def run_tests():
     # Create a test instance
     test_instance = YABOOKAPITest()
+    test_instance.setUp()  # Initialize the test instance
     
     # Run tests manually in sequence
     try:
@@ -204,6 +205,8 @@ def run_tests():
         print("\n✅ All API tests passed successfully!")
     except AssertionError as e:
         print(f"\n❌ Test failed: {str(e)}")
+    except Exception as e:
+        print(f"\n❌ Error during test: {str(e)}")
 
 if __name__ == "__main__":
     print("🚀 Starting YABOOK API Tests")
