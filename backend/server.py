@@ -589,6 +589,11 @@ async def simulate_photoprism_sync(photo_dict: dict):
 # Include router and configure logging
 app.include_router(api_router)
 
+# Add root endpoint for basic testing
+@app.get("/")
+async def root():
+    return {"message": "YABOOK API - Enterprise Yearbook Management System", "status": "running"}
+
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
@@ -607,7 +612,3 @@ async def health_check():
         "timestamp": datetime.utcnow(),
         "version": "1.0.0"
     }
-
-@api_router.get("/")
-async def root():
-    return {"message": "YABOOK API - Enterprise Yearbook Management System"}
