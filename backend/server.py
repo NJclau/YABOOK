@@ -612,3 +612,7 @@ async def health_check():
         "timestamp": datetime.utcnow(),
         "version": "1.0.0"
     }
+
+@api_router.get("/")
+async def api_root():
+    return {"message": "YABOOK API - Enterprise Yearbook Management System"}
