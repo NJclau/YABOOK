@@ -208,12 +208,12 @@ const Register = ({ onSwitchToLogin }) => {
 
   const fetchSchools = async () => {
     try {
-      // First try to get existing schools
-      const response = await axios.get(`${API}/schools`);
+      // Use public endpoint for school listing during registration
+      const response = await axios.get(`${API}/schools/public`);
       setSchools(response.data);
     } catch (error) {
       console.error('Failed to fetch schools:', error);
-      // If no schools exist or we don't have permission, create demo schools
+      // Fallback to demo schools if the API call fails
       setSchools([
         { id: 'demo-school-1', name: 'Demo High School', domain: 'demo.school' },
         { id: 'demo-school-2', name: 'Example Academy', domain: 'example.academy' }
