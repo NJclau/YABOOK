@@ -315,7 +315,8 @@ async def search_photos(
         # Search in PhotoPrism
         results = await adapter.search_photos(q, count, offset)
         if results is None:
-            raise HTTPException(status_code=500, detail="PhotoPrism search failed")
+            # Return empty results instead of error if PhotoPrism search fails
+            results = []
         
         return {"results": results, "query": q, "count": len(results)}
         
