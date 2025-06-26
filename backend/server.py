@@ -193,7 +193,7 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(s
     return user
 
 async def get_current_user_school(current_user: dict = Depends(get_current_user)):
-    school = await db.schools.find_one({"_id": current_user["school_id"]})
+    school = await db.schools.find_one({"id": current_user["school_id"]})
     if not school:
         raise HTTPException(status_code=404, detail="School not found")
     return school
